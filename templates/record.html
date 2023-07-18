@@ -1,0 +1,460 @@
+
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<!-- CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+</head>
+
+<style>
+    .row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -20px;
+    margin-left: -20px;
+}
+
+
+
+  /* .progress {
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+  }
+
+  .progress-bar {
+    height: 100%;
+  } */
+
+  /* .bg-success {
+    background-color: #28a745;
+  }
+
+  .bg-danger {
+    background-color: #dc3545;
+  } */
+
+  .highlight-icon {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    font-size: 1.5rem; 
+    color: #000000;
+  }
+  
+  .edit-icon:hover {
+    color: blue;
+  }
+  
+  .delete-icon:hover {
+    color: red;
+  }
+  .highlighted-text {
+    background-color: #FAFAFA;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    overflow-wrap: break-word;
+  }
+  
+  .highlighted-text p {
+    margin: 0;
+  }
+  
+  .highlighted-text p:first-child {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: black; /* Set the color to orange */
+  }
+  
+  .highlighted-text a {
+    word-break: break-all;
+    color: black; /* Set the color to orange */
+  }
+  
+  .highlighted-text a:hover {
+    text-decoration: underline;
+  }
+    
+  .black-text {
+    color: black;
+  }
+  
+
+  #cancelButton {
+    float: right;
+    background-color: blue;
+    color: white;
+  }
+  
+   /* Custom styles for the filter section */
+    .filter-section {
+      margin-bottom: 20px;
+    }
+    .filter-section label {
+      margin-right: 10px;
+    }
+
+    /* Custom CSS for styling the table */
+.table th, .table td {
+  vertical-align: middle;
+}
+
+.stretch-card > .card {
+    width: 100%;
+    min-width: 100%;
+}
+.card {
+    border: 0;
+    background: #fff;
+}
+.card {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.3125rem;
+}
+
+
+  
+</style>
+
+<br><br>
+<br><br>
+<br><br>
+
+<div class="container">
+  <div class="row">
+  
+  <div class="col-md-4 stretch-card grid-margin">
+    <div class="card bg-gradient-danger card-img-holder text-white">
+      <div class="card-body" style="background-color:#4e4376;border-radius: 5px;">
+        <h4 class="font-weight-normal mb-3">No. of Reporters <i class="mdi mdi-chart-line mdi-24px float-right"></i></h4>
+        <h5 class="mb-5" id="reporter-count-placeholder">Loading...</h5>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4  grid-margin">
+    <div class="card bg-gradient-info card-img-holder text-white">
+      <div class="card-body" style="background-color: #5aab92;border-radius: 5px;">
+        <h4 class="font-weight-normal mb-3">Bugs count<i class="mdi mdi-bookmark-outline mdi-24px float-right"></i></h4>
+        <h5 class="mb-5" id="bugs-count-placeholder">Loading...</h5>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4 stretch-card grid-margin">
+    <div class="card bg-gradient-success card-img-holder text-white">
+      <div class="card-body" style="background-color: #46aef7;border-radius: 5px;">
+        <h4 class="font-weight-normal mb-3">Reported bugs <i class="mdi mdi-diamond mdi-24px float-right"></i></h4>
+        <h5 class="mb-5" id="reported-count-placeholder">Loading...</h5>
+      </div>
+    </div>
+  </div>
+  
+</div>
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Reporter Record</h4>
+
+    <table class="table table-bordered">
+      <thead>
+        <thead>
+          <tr>
+            <th>Bug Reporter</th>
+            <th>Bug Progress</th>
+          </tr>
+        </thead>
+        <tbody id="record-table-body">
+
+          {% for i1 in record2 %}
+              <tr class="record-row1">
+                <td>{{i1.ReporterName}}</td>
+                <td>
+                  <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                      aria-valuenow="{{ i1.Records }}" aria-valuemin="0" aria-valuemax="100" style="width:{% widthratio i1.Records 10 100 %}%">
+                      {{ i1.Records }}%
+                      </div>
+                    </div>
+                  </td>
+
+
+                </tr>
+          </tbody>
+          {% endfor%}
+      </table>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+  
+    <table class="table table-striped my-3">
+      <div class="container my-5 " >
+        <div class="filter-section " >
+          <div class="form-row">
+            <div class="form-group col-md-9">
+             
+    
+            </div>
+            <div class="col-md-3">
+
+              <label for="bug-type" ><strong>Filter Records</strong></label>
+    
+              <select id="bugTypeFilter" name="bugTypeFilter" class="form-select" aria-label="Default select example">
+                <option value="">All</option>
+                <option value="UI Bug">UI Bug</option>
+                <option value="Functional Bug">Functional Bug</option>
+                <option value="Performance Bug">Performance Bug</option>
+                <option value="Compatibility Bug">Compatibility Bug</option>
+                <option value="Security Bug">Security Bug</option>
+                <option value="Data Bug">Data Bug</option>
+                <option value="Integration Bug">Integration Bug</option>
+                <option value="Usability Bug">Usability Bug</option>
+                <option value="Accessibility Bug">Accessibility Bug</option>
+              </select>
+  
+              <button  class="btn btn-primary my-3" id="apply-filter">Apply Filter</button>
+  
+            </div>
+          </div>
+              
+            
+        </div>
+      </div>
+      
+      
+      <h4 class="card-title my-3">Records</h4>
+     
+      <thead>
+        <tr>
+          <th>Bug no</th>
+          <th>Bug Reporter</th>
+          <th>Bug type</th>
+          <th>Owner Email</th>
+          <th>Status</th>
+          <th>More detail</th>
+          <th style="margin-right: 16px;">&nbsp;Edit | Delete</th>
+        </tr>
+      </thead>
+      <tbody id="record-table-body">
+        {% for i in record %}
+        <tr class="record-row" data-bug-type="{{ i.BugType }}">
+          <td>{{ i.ReporterID }}</td>
+          <td>{{ i.ReporterName }}</td>
+          <td>{{ i.BugType }}</td>
+          <td>{{ i.OwnerEmail }}</td>
+          <td >{{i.status}}</td>
+          <td>
+            <div class="highlight-icon">
+              <a href="#" class="more-detail-button" data-target="#moreDetailModal{{ i.ReporterID }}" style="color:#000000;">
+                &nbsp;&nbsp;
+                <i class="bi bi-three-dots"></i>
+
+              </a>
+            </div>
+          </td>
+          <td>
+            <div class="highlight-icon">
+              <a href="#" class="more-detail-button" data-target="#editBugModal{{ i.ReporterID }}" style="color:#000000">
+                <i class="fas fa-pencil-alt edit-icon" style="margin-right: 20px;"></i>
+              </a>
+              &nbsp;|&nbsp;
+              <a href="{% url 'delete_record' ReporterID=i.ReporterID %}" style="color: #000000;">
+
+                <i class="bi bi-trash-fill delete-icon"></i>
+                 
+                  
+                
+            </div>
+          </td>
+        </tr>
+        <div class="modal fade" id="editBugModal{{ i.ReporterID }}" tabindex="-1" role="dialog" aria-labelledby="moreDetailLabel{{ i.ReporterID }}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="moreDetailLabel{{ i.ReporterID }}">Update record</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form class="forms-sample " action="{% url 'update_record' i.ReporterID %}" method="POST" >
+                  {% csrf_token %}
+                  
+                  <div class="form-group my-1">
+                    <label for="exampleInputBugReporter">Bug Reporter</label>
+                    <input type="text" class="form-control my-2" name="reporterName1" value="{{i.ReporterName}}" id="exampleInputBugReporter" placeholder="Bug Reporter" required>
+                  </div>
+                  <div class="form-group my-1">
+                    <label for="exampleInputBugType">Bug Type</label>
+                    <select class="form-control" value="{{i.BugType}}" id="exampleInputBugType" required name="bugType1">
+                      <option {% if i.BugType == 'UI Bug' %}selected{% endif %}>UI Bug</option>
+                      <option {% if i.BugType == 'Functional Bug' %}selected{% endif %}>Functional Bug</option>
+                      <option {% if i.BugType == 'Performance Bug' %}selected{% endif %}>Performance Bug</option>
+                      <option {% if i.BugType == 'Compatibility Bug' %}selected{% endif %}>Compatibility Bug</option>
+                      <option {% if i.BugType == 'Security Bug' %}selected{% endif %}>Security Bug</option>
+                      <option {% if i.BugType == 'Data Bug' %}selected{% endif %}>Data Bug</option>
+                      <option {% if i.BugType == 'Integration Bug' %}selected{% endif %}>Integration Bug</option>
+                      <option {% if i.BugType == 'Usability Bug' %}selected{% endif %}>Usability Bug</option>
+                      <option {% if i.BugType == 'Accessibility Bug' %}selected{% endif %}>Accessibility Bug</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group my-1">
+                    <label for="exampleInputReason">Reason</label>
+                    <input type="text" name="bugReason1" value="{{i.Reason}}" class="form-control my-2" id="exampleInputReason" placeholder="Reason" required>
+                  </div>
+                  <div class="form-group my-1">
+                    <label for="siteName">Site name</label>
+                    <input type="text" name="siteName1" value="{{i.SiteName}}" class="form-control my-2" id="siteName" placeholder="Site name" required>
+                  </div>
+                  <div class="form-group my-1">
+                    <label for="exampleInputSiteLink">Site Link</label>
+                    <input type="url" name="siteLink1" class="form-control my-2" value="{{i.SiteLink}}" id="exampleInputSiteLink" placeholder="Site Link" pattern="https?://.+">
+                  </div>
+                  <div class="form-group my-1">
+                    <label for="exampleInputOwnerEmail">Owner Email</label>
+                    <input type="email" name="ownerEmail1" class="form-control" value="{{i.OwnerEmail}}" id="exampleInputOwnerEmail" placeholder="Owner Email" required>
+                  </div>
+            
+                  <div class="form-group text-left mt-3 my-1">
+                    <button type="submit" class="btn btn-primary btn-submit">Submit</button>
+                    <button type="submit" class="btn btn-light btn-cancel">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <div class="modal fade" id="moreDetailModal{{ i.ReporterID }}" tabindex="-1" role="dialog" aria-labelledby="moreDetailLabel{{ i.ReporterID }}">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="moreDetailLabel{{ i.ReporterID }}">More Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="highlighted-text">
+                  <p><strong>Site Name:</strong></p>
+                  <p class="site_name"><b>{{ i.SiteName }}</b></p>
+                </div>
+                <div class="highlighted-text">
+                  <p><strong>Reason:</strong></p>
+                  <p class="reason black-text"><b>{{ i.Reason }}</b></p>
+                </div>
+                <div class="highlighted-text">
+                  <p><strong>Site Link:</strong></p>
+                  <p class="site-link"><b><a href="{{ i.SiteLink }}" target="_blank">{{ i.SiteLink }}</a></b></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+
+       
+                
+      {% endfor %}
+    </table>
+    
+
+
+
+    <script>
+      document.getElementById("apply-filter").addEventListener("click", function() {
+        var bugTypeFilter = document.getElementById("bugTypeFilter");
+        var selectedBugType = bugTypeFilter.value;
+      
+        var recordRows = document.getElementsByClassName("record-row");
+      
+        for (var i = 0; i < recordRows.length; i++) {
+          var row = recordRows[i];
+          var bugType = row.getAttribute("data-bug-type");
+      
+          if (selectedBugType === "" || bugType === selectedBugType) {
+            row.style.display = ""; // Show the row
+          } else {
+            row.style.display = "none"; // Hide the row
+          }
+        }
+      });
+      
+      </script>
+
+    <br><br><br>
+
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('.more-detail-button').click(function() {
+      var modalId = $(this).data('target');
+      $(modalId).modal('show');
+    });
+  });
+
+  
+
+  $(document).ready(function() {
+    updateCounts();
+  
+    function updateCounts() {
+      $.ajax({
+        url: '/get-counts/',  // Replace with the URL of your get_counts endpoint
+        type: 'GET',
+        success: function(data) {
+          $('#reporter-count-placeholder').text(data.reporter_count);
+          $('#bugs-count-placeholder').text(data.bugs_count);
+          $('#reported-count-placeholder').text(data.reported_count);
+        },
+        error: function() {
+          console.log('Error occurred while fetching counts.');
+        }
+      });
+    }
+  });
+  
+  </script>
+  
+  {% endblock %}

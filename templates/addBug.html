@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<style>
+  .btn-cancel:hover {
+    background-color: #efefef;
+  }
+ 
+  .form-wrapper {
+    background-color: #ffffff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 125vh; /* Adjust as needed */
+    padding: 120px;
+  }
+  .card .card-body {
+  padding: 2.5rem 2.5rem;
+}
+
+.card-body {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+}
+</style>
+
+<body>
+  <div class="main-banner fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
+    <div class="container">
+      <div class="card-body">
+        <h4 class="card-title">Bug Report Form</h4>
+        <p class="card-description">Please fill in the details below to report a bug</p>
+        <form class="forms-sample " action="{% url 'saveform'%}" method="POST" >
+          <!-- <div class="form-group my-1">
+            <label for="exampleInputBugNo">Bug Number</label>
+            <input type="number" class="form-control my-2" id="exampleInputBugNo" name="bugNumber" placeholder="Bug Number" required>
+          </div> -->
+          <div class="form-group my-1">
+            <label for="exampleInputBugReporter"x`>Bug Reporter</label>
+            <input type="text" class="form-control my-2" name="reporterName" id="exampleInputBugReporter" placeholder="Bug Reporter" required>
+          </div>
+
+          <div class="form-group my-1">
+            <label for="exampleInputBugType">Bug Type</label>
+            <select class="form-control my-2" name="bugType" id="exampleInputBugType" required>
+              <option value="">Select Bug Type</option>
+              <option value="UI Bug">UI Bug</option>
+              <option value="Functional Bug">Functional Bug</option>
+              <option value="Performance Bug">Performance Bug</option>
+              <option value="Compatibility Bug">Compatibility Bug</option>
+              <option value="Security Bug">Security Bug</option>
+              <option value="Data Bug">Data Bug</option>
+              <option value="Integration Bug">Integration Bug</option>
+              <option value="Usability Bug">Usability Bug</option>
+              <option value="Accessibility Bug">Accessibility Bug</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+<!-- Bootstrap Modal for Other Option -->
+<div class="modal fade" id="otherModal" tabindex="-1" role="dialog" aria-labelledby="otherModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="otherModalLabel">Add New Bug Type</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="newBugType">Bug Type:</label>
+        <input type="text" class="form-control" id="newBugType" name="newBugType" required>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelBugType">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveBugType">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+          
+          <div class="form-group my-1">
+            <label for="exampleInputReason">Reason</label>
+            <input type="text" name="bugReason" class="form-control my-2" id="exampleInputReason" placeholder="Reason" required>
+          </div>
+          <div class="form-group my-1">
+            <label for="siteName">Site name</label>
+            <input type="text" name="siteName" class="form-control my-2" id="siteName" placeholder="Site name" required>
+          </div>
+          <div class="form-group my-1">
+            <label for="exampleInputSiteLink">Site Link</label>
+            <input type="url"  name="siteLink" class="form-control my-2" id="exampleInputSiteLink" placeholder="Site Link" pattern="https?://.+">
+          </div>
+          <div class="form-group my-1">
+            <label for="exampleInputOwnerEmail">Owner Email</label>
+            <input type="email" name="ownerEmail" class="form-control" id="exampleInputOwnerEmail" placeholder="Owner Email" required>
+          </div>
+    
+          <div class="form-group text-left mt-3 my-1">
+            <button type="submit" class="btn btn-primary btn-submit">Submit</button>
+            <button class="btn btn-light btn-cancel">Cancel</button> 
+          </div>
+        </form>
+      </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+</body>
+<!-- Include Bootstrap JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+
+
+<script>
+  // JavaScript to handle the Other option and modal
+  document.getElementById("exampleInputBugType").addEventListener("change", function() {
+    var selectedValue = this.value;
+    if (selectedValue === "Other") {
+      $('#otherModal').modal('show');
+    }
+  });
+
+  document.getElementById("saveBugType").addEventListener("click", function() {
+    var newBugType = document.getElementById("newBugType").value;
+    if (newBugType.trim() !== "") {
+      var selectElement = document.getElementById("exampleInputBugType");
+      var optionValues = Array.from(selectElement.options).map(option => option.value);
+      if (optionValues.includes(newBugType)) {
+        alert("Bug type already added!");
+      } else {
+        var option = document.createElement("option");
+        option.value = newBugType;
+        option.text = newBugType;
+        selectElement.add(option, selectElement.options[1]);
+        selectElement.value = newBugType;
+        $('#otherModal').modal('hide');
+      }
+    } else {
+      alert("Please write a bug");
+    }
+  });
+
+  document.getElementById("cancelBugType").addEventListener("click", function() {
+    document.getElementById("newBugType").value = "";
+    $('#otherModal').modal('hide');
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,224 @@
+
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<br><br>
+<br><br>
+<br><br>
+<div id="alert"></div>
+
+
+<div class="container">
+    <h1>Bug Report</h1>
+
+    <form action="/send-email" method="POST">
+        {% csrf_token %}
+        <div class="form-group my-3">
+            <label for="reporter">Reporter:</label>
+            <select class="form-control my-2" id="reporter" name="reporter">
+                <option value="">Select Reporter</option>
+
+                {% for reporter in reporters %}
+                <option value="{{ reporter.0 }}">{{ reporter.0}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="bug_type">Bug Type:</label>
+            <select class="form-control my-2" id="bug_type" name="bug_type">
+                <option value="">Select Bug Type</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="site_name">Site Name:</label>
+            <select class="form-control my-2" id="site_name" name="site_name">
+                <option value="">Select Site Name</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="email my-2" for="owner_email my-2">Owner Email:</label>
+            <input type="email" class="form-control" id="owner_email" name="owner_email" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label class='subject my-2' for="subject">Subject:</label>
+            <input type="text" class="form-control" id="subject" name="subject" required>
+        </div>
+
+        <div class="form-group my-2">
+            <label for="message">Message:</label>
+            <div class="input-group my-2">
+                <textarea class="form-control" id="message" name="message" rows="4" cols="50" required></textarea>
+            </div>
+            <div class="button-container my-3">
+                <button class="btn btn-primary btn-icon" onclick="abc()" id="send-email-button">
+                    <i class="fas fa-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        
+               
+        
+        
+          
+        </form>
+
+
+        
+        
+        <script>
+
+            function updateStatus(reporterName, bugType, siteName) {
+                $.ajax({
+                    url: '/update-status/',  // Replace with the appropriate URL or endpoint
+                    method: 'POST',
+                    data: {
+                        'reporter_name': reporterName,
+                        'bug_type': bugType,
+                        'site_name': siteName
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        // Handle success response of update_status function
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response of update_status function
+                    }
+                });
+            }
+            
+
+            $(document).ready(function() {
+                $('#reporter').change(function() {
+                    var reporterName = $(this).find('option:selected').text();
+                    if (reporterName) {
+                        $.ajax({
+                            url: '/fetch-bug-types/',
+                            data: {'reporter': reporterName},
+                            dataType: 'json',
+                            success: function(data) {
+                                $('#bug_type').empty().append('<option value="">Select Bug Type</option>');
+                                $.each(data.bug_types, function(index, bugType) {
+                                    $('#bug_type').append('<option value="' + bugType + '">' + bugType + '</option>');
+                                });
+                            }
+                        });
+                    } else {
+                        $('#bug_type').empty().append('<option value="">Select Bug Type</option>');
+                        $('#site_name').empty().append('<option value="">Select Site Name</option>');
+                        $('#owner_name').empty().append('<option value="">Select Owner Name</option>');
+                        $('#owner_email').val('');
+                    }
+                });
+        
+                $('#bug_type').change(function() {
+                    var reporterName = $('#reporter').find('option:selected').text();
+                    var bugType = $(this).val();
+                    if (reporterName && bugType) {
+                        $.ajax({
+                            url: '/fetch-site-names/',
+                            data: {'reporterName': reporterName, 'bug_type': bugType},
+                            dataType: 'json',
+                            success: function(data) {
+                                $('#site_name').empty().append('<option value="">Select Site Name</option>');
+                                $.each(data.site_names, function(index, siteName) {
+                                    $('#site_name').append('<option value="' + siteName + '">' + siteName + '</option>');
+                                });
+                            }
+                        });
+                    } else {
+                        $('#site_name').empty().append('<option value="">Select Site Name</option>');
+                        $('#owner_name').empty().append('<option value="">Select Owner Name</option>');
+                        $('#owner_email').val('');
+                    }
+                });
+        
+                $('#site_name').change(function() {
+                    var reporterName = $('#reporter').find('option:selected').text();
+                    var bugType = $('#bug_type').val();
+                    var siteName = $(this).val();
+                    if (reporterName && bugType && siteName) {
+                        $.ajax({
+                            url: '/fetch-owner-email/',
+                            data: {'reporter': reporterName, 'bug_type': bugType, 'site_name': siteName},
+                            dataType: 'json',
+                            success: function(data) {
+                                $('#owner_name').empty().append('<option value="">Select Owner Name</option>');
+                                $.each(data.owner_names, function(index, ownerName) {
+                                    $('#owner_name').append('<option value="' + ownerName + '">' + ownerName + '</option>');
+                                });
+                                $('#owner_email').val(data.owner_email);
+                            }
+                        });
+                    } else {
+                        $('#owner_name').empty().append('<option value="">Select Owner Name</option>');
+                        $('#owner_email').val('');
+                    }
+                });
+        
+                $('#send-email-button').click(function(event) {
+                    event.preventDefault();
+        
+                    var ownerEmail = $('#owner_email').val();
+                    var subject = $('#subject').val();
+                    var message = $('#message').val();
+        
+                    if (ownerEmail && subject && message) {
+                        $.ajax({
+                            url: '/send-email/',
+                            method: 'POST',
+                            data: {
+                                'owner_email': ownerEmail,
+                                'subject': subject,
+                                'message': message
+                            },
+                            dataType: 'json',
+                            success: function(data) {
+                                var reporterName = $('#reporter').find('option:selected').text();
+                                var bugType = $('#bug_type').val();
+                                var siteName = $('#site_name').val();
+
+                            
+                                updateStatus(reporterName, bugType, siteName);
+                                $('#alert').html('<div class="alert alert-success">Mail has been sent successfully.</div>').show();
+                               const displayDuration = 300000000345435345400300000000345435345400; // Adjust the duration (in milliseconds) as needed 
+
+                                setTimeout(function() {
+
+                                    $('#alert').fadeOut('slow', function() {
+                                    $(this).remove();
+                                     });
+                                   }, displayDuration);
+                                
+
+                       // Reload the page after a delay
+                                setTimeout(function() {
+                                   location.reload();
+                                 }, 10);
+                            },
+
+                            
+
+                            error: function(xhr, status, error) {
+                                console.log('Error:', xhr.responseText);
+
+                            }
+                        });
+                    }
+                });
+            });
+
+            // const abc=()=>{
+            //     $('#alert alert-success').text('Mail has been sent successfully.').show();
+
+            // }
+        </script>
+        
+{% endblock %}
