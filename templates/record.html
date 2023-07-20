@@ -216,14 +216,6 @@
       </table>
     </div>
   </div>
-
-
-
-
-
-
-
-
   
     <table class="table table-striped my-3">
       <div class="container my-5 " >
@@ -239,15 +231,9 @@
     
               <select id="bugTypeFilter" name="bugTypeFilter" class="form-select" aria-label="Default select example">
                 <option value="">All</option>
-                <option value="UI Bug">UI Bug</option>
-                <option value="Functional Bug">Functional Bug</option>
-                <option value="Performance Bug">Performance Bug</option>
-                <option value="Compatibility Bug">Compatibility Bug</option>
-                <option value="Security Bug">Security Bug</option>
-                <option value="Data Bug">Data Bug</option>
-                <option value="Integration Bug">Integration Bug</option>
-                <option value="Usability Bug">Usability Bug</option>
-                <option value="Accessibility Bug">Accessibility Bug</option>
+                {% for bugType in record3 %}
+                  <option value="{{ bugType }}">{{ bugType }}</option>
+                {% endfor %}
               </select>
   
               <button  class="btn btn-primary my-3" id="apply-filter">Apply Filter</button>

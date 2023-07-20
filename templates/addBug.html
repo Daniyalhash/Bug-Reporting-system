@@ -4,7 +4,6 @@
 
 {% block content %}
 
-
 <style>
   .btn-cancel:hover {
     background-color: #efefef;
@@ -30,8 +29,9 @@
   min-height: 1px;
   padding: 1.25rem;
 }
-</style>
 
+
+</style>
 <body>
   <div class="main-banner fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
     <div class="container">
@@ -47,7 +47,6 @@
             <label for="exampleInputBugReporter"x`>Bug Reporter</label>
             <input type="text" class="form-control my-2" name="reporterName" id="exampleInputBugReporter" placeholder="Bug Reporter" required>
           </div>
-
           <div class="form-group my-1">
             <label for="exampleInputBugType">Bug Type</label>
             <select class="form-control my-2" name="bugType" id="exampleInputBugType" required>
@@ -64,27 +63,28 @@
               <option value="Other">Other</option>
             </select>
           </div>
-<!-- Bootstrap Modal for Other Option -->
-<div class="modal fade" id="otherModal" tabindex="-1" role="dialog" aria-labelledby="otherModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="otherModalLabel">Add New Bug Type</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label for="newBugType">Bug Type:</label>
-        <input type="text" class="form-control" id="newBugType" name="newBugType" required>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelBugType">Cancel</button>
-        <button type="button" class="btn btn-primary" id="saveBugType">Save</button>
-      </div>
-    </div>
-  </div>
-</div>
+            <!-- Bootstrap Modal for Other Option -->
+            <div class="modal fade" id="otherModal" tabindex="-1" role="dialog" aria-labelledby="otherModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="otherModalLabel">Add New Bug Type</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <label for="newBugType">Bug Type:</label>
+                    <input type="text" class="form-control" id="newBugType" name="newBugType" required>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelBugType">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveBugType">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
           
           <div class="form-group my-1">
             <label for="exampleInputReason">Reason</label>
@@ -115,6 +115,8 @@
   </div>
     
 </body>
+
+
 <!-- Include Bootstrap JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
