@@ -8,10 +8,11 @@ urlpatterns = [
     path('', home, name='home'),
     path('addBug', addBug, name='addBug'),
     path('record/', record, name='record'),
+    path('bugType/', views.bug_types_view, name='bugTypes'),
+    # path('url_path/', views.view_function, name='view_function'),
     path('delete_record/<str:ReporterID>/', delete_record, name='delete_record'),
-    path('saveform', saveform, name='saveform'),
+    path('saveform/', saveform, name='saveform'),
     path('update_record/<str:ReporterID>/',update_record,name='update_record'),
-
     path('get-counts/', views.get_counts, name='get_counts'),
     path('email/', views.email, name='email'),
     path('fetch-bug-types/', views.fetch_bug_types, name='fetch_bug_types'),

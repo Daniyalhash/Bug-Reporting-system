@@ -87,6 +87,7 @@ def record(request):
         cursor = db.cursor()
         cursor1=db.cursor()
         cursor2=db.cursor()
+        cursor3=db.cursor()
 
         query = "SELECT ReporterID, ReporterName, BugType, Reason, SiteName, SiteLink, OwnerEmail,status FROM Form"
         cursor.execute(query)
@@ -123,12 +124,28 @@ def record(request):
         for row in row2:
             r = dict(zip(column_names2, row))
             record2.append(r)
-    # print(context[0])
-    return render(request,'record.html',{'record':record,'record1':record1,'record2':record2 })
 
+        cursor3.execute("SELECT DISTINCT bugType FROM Form;")
+        record3 = [row[0] for row in cursor3.fetchall()]
+    # print(context[0])
+    return render(request,'record.html',{'record':record,'record1':record1,'record2':record2, 'record3':record3 })
+
+
+def bug_types_view(request):
+    print("*"*10)
+    # Connect to the SQLite database
+    with sqlite3.connect(BASE_DIR / 'data.db') as db:
+        cursor = db.cursor()
+        
+        # Fetch all unique bug types from the 'Form' table
+        cursor.execute("SELECT DISTINCT bugType FROM Form;")
+        bug_types = [row[0] for row in cursor.fetchall()]
+
+    return render(request, 'record.html', {'bugTypes': bug_types})
 
 @csrf_exempt
 def saveform(request):
+    print("*"*20)
     if request.method == 'POST':
         reporterName = request.POST.get('reporterName')
         bugType = request.POST.get('bugType')
@@ -137,7 +154,6 @@ def saveform(request):
         siteLink = request.POST.get('siteLink')
         ownerEmail = request.POST.get('ownerEmail')
         status = "Not reported"
-
         with sqlite3.connect(BASE_DIR / 'data.db') as db:
             cursor = db.cursor()
 
@@ -151,11 +167,12 @@ def saveform(request):
                 new_id = str(last_id + 1).zfill(4)  # Increment the last ID and pad with leading zeros
             else:
                 new_id = "0001"  # If there are no existing records, start with 0001
-
+           
             query = """INSERT INTO Form (ReporterID, ReporterName, BugType, Reason, SiteName, SiteLink, OwnerEmail, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
             values = (new_id, reporterName, bugType, reason, siteName, siteLink, ownerEmail, status)
             cursor.execute(query, values)
-            
+            db.commit()  # Add this line to commit the changes to the database
+
     return render(request, 'addBug.html')
 
 def email(request):
